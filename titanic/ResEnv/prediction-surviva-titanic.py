@@ -258,14 +258,14 @@ X_test = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 
 # train
 print('train')
-print(X_train.mean())
-print(X_train.std())
+print(X_train.mean().mean())
+print(X_train.std().mean())
 print('============')
 
 # test
 print('test')
-print(X_test.mean())
-print(X_test.std())
+print(X_test.mean().mean())
+print(X_test.std().mean())
 print('============')
 
 
@@ -274,8 +274,27 @@ print('============')
 #  ========== Train the model =================
 # TODO: Train the logistic regression
 # =========================================================================
-model = LogisticRegression(C=2000, random_state=0)
+
+model = LogisticRegression(C=0.0005, random_state=0)
 model = model.fit(X_train, y_train)
+joblib.dump(model, 'model.pkl')
+model = joblib.load('model.pkl')
+
+# ==========================================================================
+#  ========== Make prediction and evaluate model performance =================
+# TODO: Determine roc-auc, accuracy
+
+# train
+train_acc = accuracy_score(y_train, model.predict(X_train))
+train_roc_auc = roc_auc_score(y_train, model.predict_proba(X_train)[:, 1])
+print(f'Train accuracy: {train_acc}')
+print(f'Train roc_auc: {train_roc_auc}')
+
+# test
+test_acc = accuracy_score(y_test, model.predict(X_test))
+test_roc_auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
+print(f'Train accuracy: {test_acc}')
+print(f'Train roc_auc: {test_roc_auc}')
 
 
-model.predict_proba(X_test)
+
